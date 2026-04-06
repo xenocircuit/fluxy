@@ -9,70 +9,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --m3-surface: #FEF7FF; --m3-primary: #6750A4; --m3-primary-container: #EADDFF;
-            --m3-on-container: #21005D; --m3-variant: #E7E0EC; --m3-outline: #79747E;
-        }
-
-        body {
-            margin: 0; font-family: 'Google Sans', sans-serif; background-color: var(--m3-surface);
-            color: #1D1B20; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
-        }
-
-        header {
-            height: 64px; display: flex; align-items: center; padding: 0 16px;
-            background: var(--m3-surface); position: sticky; top: 0; z-index: 10;
-        }
+        :root { --m3-surface: #FEF7FF; --m3-primary: #6750A4; --m3-primary-container: #EADDFF; --m3-on-container: #21005D; --m3-variant: #E7E0EC; --m3-outline: #79747E; }
+        body { margin: 0; font-family: 'Google Sans', sans-serif; background-color: var(--m3-surface); color: #1D1B20; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        header { height: 64px; display: flex; align-items: center; padding: 0 16px; background: var(--m3-surface); position: sticky; top: 0; z-index: 10; }
         header h1 { font-size: 22px; flex: 1; margin: 0; font-weight: 400; }
         .icon-btn { background: none; border: none; color: var(--m3-outline); padding: 8px; cursor: pointer; }
-
-        /* Settings Modal */
-        #settings-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 200;
-        }
-        .modal-content {
-            background: var(--m3-surface); width: 90%; max-width: 400px; padding: 24px; border-radius: 28px;
-        }
+        #settings-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 200; }
+        .modal-content { background: var(--m3-surface); width: 90%; max-width: 400px; padding: 24px; border-radius: 28px; }
         .modal-content h2 { margin: 0 0 4px 0; font-size: 22px; font-weight: 500; }
         .modal-content label { font-size: 12px; color: var(--m3-outline); margin-top: 12px; display: block; font-weight: 500; }
-        .modal-content input {
-            width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid var(--m3-outline);
-            border-radius: 8px; font-size: 14px; margin-top: 4px; font-family: 'Google Sans', sans-serif; background: transparent;
-        }
-        .modal-content button {
-            background: var(--m3-primary); color: white; border: none; padding: 10px 24px; margin-top: 20px;
-            border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; width: 100%;
-        }
-
-        /* History */
+        .modal-content input { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid var(--m3-outline); border-radius: 8px; font-size: 14px; margin-top: 4px; font-family: 'Google Sans', sans-serif; }
+        .modal-content button { background: var(--m3-primary); color: white; border: none; padding: 10px 24px; margin-top: 20px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; width: 100%; }
         #history-list { padding: 16px; display: flex; flex-direction: column; gap: 12px; padding-bottom: 100px; }
         .card { background: var(--m3-variant); border-radius: 20px; padding: 12px; display: flex; gap: 16px; align-items: center; }
         .card img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; }
         .card-info { flex: 1; }
         .card-time { font-size: 11px; color: var(--m3-outline); margin-bottom: 4px; }
         .card-result { font-size: 14px; font-weight: 500; color: var(--m3-on-container); line-height: 1.4; }
-
-        /* Camera Overlay */
         #camera-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; display: none; z-index: 100; }
         #video-feed { width: 100%; height: 100%; object-fit: cover; }
-        .camera-ui {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: space-between; padding: 24px; box-sizing: border-box;
-        }
-        .btn-close {
-            background: rgba(0,0,0,0.5); border: none; color: white; width: 48px; height: 48px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; align-self: flex-end; cursor: pointer;
-        }
-
-        /* FAB */
-        .fab {
-            position: fixed; bottom: 24px; right: 24px; width: 76px; height: 76px; border-radius: 24px;
-            background: var(--m3-primary-container); color: var(--m3-on-container); border: none;
-            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 50; cursor: pointer;
-        }
-
-        /* Loader */
+        .camera-ui { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; box-sizing: border-box; }
+        .btn-close { background: rgba(0,0,0,0.5); border: none; color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; align-self: flex-end; cursor: pointer; }
+        .fab { position: fixed; bottom: 24px; right: 24px; width: 76px; height: 76px; border-radius: 24px; background: var(--m3-primary-container); color: var(--m3-on-container); border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 50; cursor: pointer; }
         #loader { position: fixed; top: 0; width: 100%; height: 4px; z-index: 1000; display: none; overflow: hidden; }
         #loader-bar { width: 100%; height: 100%; background: var(--m3-primary); animation: loading 1.5s infinite linear; transform-origin: 0% 50%; }
         @keyframes loading { 0% { transform: translateX(-100%) scaleX(0.1); } 50% { transform: translateX(0%) scaleX(0.4); } 100% { transform: translateX(100%) scaleX(0.1); } }
@@ -81,76 +39,52 @@
 <body>
 
     <div id="loader"><div id="loader-bar"></div></div>
-
     <header>
         <h1>AssessAI</h1>
         <button class="icon-btn" onclick="openSettings()"><span class="material-icons-round">settings</span></button>
         <button class="icon-btn" onclick="clearHistory()"><span class="material-icons-round">delete_sweep</span></button>
     </header>
-
     <div id="history-list"></div>
-
-    <button class="fab" onclick="startCamera()">
-        <span class="material-icons-round" style="font-size: 36px;">photo_camera</span>
-    </button>
-
+    <button class="fab" onclick="startCamera()"><span class="material-icons-round" style="font-size: 36px;">photo_camera</span></button>
     <div id="camera-overlay">
         <video id="video-feed" autoplay playsinline muted onclick="capturePhoto()"></video>
         <div class="camera-ui" onclick="capturePhoto()">
             <button class="btn-close" onclick="stopCamera(event)"><span class="material-icons-round">close</span></button>
-            <div style="color:white; text-align:center; margin-bottom:60px; text-shadow: 0 2px 4px #000;">Tap anywhere to capture</div>
+            <div style="color:white; text-align:center; margin-bottom:60px;">Tap anywhere to capture</div>
         </div>
     </div>
 
-    <!-- Settings Modal -->
     <div id="settings-modal">
         <div class="modal-content">
-            <h2>API Pipeline Setup</h2>
-            
-            <label>API Endpoint (URL)</label>
-            <input type="url" id="api-url" placeholder="https://api.yourprovider.com" />
-            
-            <label>OCR Vision Model</label>
+            <h2>AI Setup</h2>
+            <label>API Endpoint (Your Ngrok URL)</label>
+            <input type="url" id="api-url" placeholder="https://ela-executory....ngrok-free.dev" />
+            <label>OCR Model</label>
             <input type="text" id="ocr-model" value="deepseek-ocr" />
-            
-            <label>Reasoning Answer Model</label>
+            <label>Reasoning Model</label>
             <input type="text" id="ans-model" value="deepseek-v3.1:671b-cloud" />
-            
             <label>API Key</label>
             <input type="password" id="api-key" placeholder="Bearer Token" />
-
             <button onclick="saveSettings()">Save Configuration</button>
         </div>
     </div>
-
     <canvas id="hidden-canvas" style="display:none;"></canvas>
 
     <script>
-        // --- PRE-CONFIGURED DEFAULTS ---
         const DEFAULT_KEY = "b59f87f33bcf48f29069785e2a83bfcf.b3KEJ7vpeftmr39NGB2Wlerm";
-        const DEFAULT_OCR = "deepseek-ocr";
-        const DEFAULT_ANS = "deepseek-v3.1:671b-cloud";
-
-        let video = document.getElementById('video-feed');
-        let canvas = document.getElementById('hidden-canvas');
-        let overlay = document.getElementById('camera-overlay');
-        let loader = document.getElementById('loader');
+        let video = document.getElementById('video-feed'), canvas = document.getElementById('hidden-canvas');
+        let overlay = document.getElementById('camera-overlay'), loader = document.getElementById('loader');
 
         window.onload = () => {
             renderHistory();
-            // Automatically set the defaults if they don't exist yet
             if(!localStorage.getItem('api_key')) localStorage.setItem('api_key', DEFAULT_KEY);
-            if(!localStorage.getItem('ocr_model')) localStorage.setItem('ocr_model', DEFAULT_OCR);
-            if(!localStorage.getItem('ans_model')) localStorage.setItem('ans_model', DEFAULT_ANS);
-            
-            // Force the user to just provide the Base URL the first time
             if(!localStorage.getItem('api_url')) openSettings();
         };
 
         function openSettings() {
             document.getElementById('api-url').value = localStorage.getItem('api_url') || "";
-            document.getElementById('ocr-model').value = localStorage.getItem('ocr_model') || DEFAULT_OCR;
-            document.getElementById('ans-model').value = localStorage.getItem('ans_model') || DEFAULT_ANS;
+            document.getElementById('ocr-model').value = localStorage.getItem('ocr_model') || "deepseek-ocr:latest";
+            document.getElementById('ans-model').value = localStorage.getItem('ans_model') || "deepseek-v3.1:671b-cloud";
             document.getElementById('api-key').value = localStorage.getItem('api_key') || DEFAULT_KEY;
             document.getElementById('settings-modal').style.display = 'flex';
         }
@@ -158,17 +92,11 @@
         function saveSettings() {
             let url = document.getElementById('api-url').value.trim();
             if(!url) return alert("Please enter the API URL");
-            
-            // Ensure Ollama format endpoint format
-            if (!url.endsWith('/api/generate')) {
-                url = url.replace(/\/$/, '') + '/api/generate';
-            }
-            
+            if (!url.endsWith('/api/generate')) url = url.replace(/\/$/, '') + '/api/generate';
             localStorage.setItem('api_url', url);
             localStorage.setItem('ocr_model', document.getElementById('ocr-model').value.trim());
             localStorage.setItem('ans_model', document.getElementById('ans-model').value.trim());
             localStorage.setItem('api_key', document.getElementById('api-key').value.trim());
-            
             document.getElementById('settings-modal').style.display = 'none';
         }
 
@@ -176,9 +104,8 @@
             if(!localStorage.getItem('api_url')) return openSettings();
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
-                video.srcObject = stream;
-                overlay.style.display = 'block';
-            } catch (err) { alert("Camera Access Denied. Check your browser permissions."); }
+                video.srcObject = stream; overlay.style.display = 'block';
+            } catch (err) { alert("Camera Access Denied."); }
         }
 
         function stopCamera(e) {
@@ -191,106 +118,81 @@
             loader.style.display = 'block';
             canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0);
-            
-            // Get base64 string
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-            const base64Image = dataUrl.split(',')[1]; 
+            const base64Image = canvas.toDataURL('image/jpeg', 0.6).split(',')[1]; 
             stopCamera();
 
             const testId = Date.now();
-            saveToHistory(testId, dataUrl, "📷 Step 1: Scanning image text with deepseek-ocr...");
+            saveToHistory(testId, canvas.toDataURL('image/jpeg', 0.6), "📷 Step 1: Scanning image text...");
 
             try {
                 const url = localStorage.getItem('api_url');
                 const ocrModel = localStorage.getItem('ocr_model');
-                const ansModel = localStorage.getItem('ans_model');
-                const apiKey = localStorage.getItem('api_key');
-
-                // Attach API Key securely in Headers
+                
+                // CRITICAL NGROK HEADERS
                 const headers = { 
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}` 
+                    'Authorization': `Bearer ${localStorage.getItem('api_key')}`,
+                    'ngrok-skip-browser-warning': 'true' 
                 };
 
-                // --- STEP 1: DEEPSEEK-OCR ---
+                // --- STEP 1: OCR ---
                 const ocrResponse = await fetch(url, {
-                    method: 'POST', 
-                    headers: headers,
-                    body: JSON.stringify({
-                        model: ocrModel,
-                        prompt: "Extract all text from this image exactly as written. Do not answer questions, just output the raw text.",
-                        images: [base64Image],
-                        stream: false
-                    })
+                    method: 'POST', headers: headers,
+                    body: JSON.stringify({ model: ocrModel, prompt: "Extract all text exactly as written.", images: [base64Image], stream: false })
                 });
 
-                if(!ocrResponse.ok) throw new Error("OCR Model failed to respond.");
+                if(!ocrResponse.ok) {
+                    const errData = await ocrResponse.text();
+                    throw new Error(`OCR Failed: ${ocrResponse.status} - ${errData}`);
+                }
                 const ocrData = await ocrResponse.json();
-                const extractedText = ocrData.response;
+                
+                updateHistory(testId, "🧠 Step 2: Reasoning...");
 
-                updateHistory(testId, "🧠 Step 2: 671B Model is reasoning...");
-
-                // --- STEP 2: DEEPSEEK 671B CLOUD ---
-                const finalPrompt = `You are an expert test solver. Read the following text extracted from an image. Identify the main question, evaluate the options, and provide the correct option number. Format exactly like this: [Option Number] Brief explanation.\n\nExtracted Text:\n${extractedText}`;
-
+                // --- STEP 2: REASONING ---
                 const ansResponse = await fetch(url, {
-                    method: 'POST', 
-                    headers: headers,
+                    method: 'POST', headers: headers,
                     body: JSON.stringify({
-                        model: ansModel,
-                        prompt: finalPrompt,
+                        model: localStorage.getItem('ans_model'),
+                        prompt: `Identify the main question, evaluate the options, and provide the correct option number. Format: [Option Number] Brief explanation.\n\nText:\n${ocrData.response}`,
                         stream: false
                     })
                 });
 
-                if(!ansResponse.ok) throw new Error("Reasoning Model failed to respond.");
+                if(!ansResponse.ok) throw new Error("Reasoning Model failed.");
                 const ansData = await ansResponse.json();
-                
-                // Final Output
                 updateHistory(testId, ansData.response);
 
             } catch (err) {
                 console.error(err);
-                updateHistory(testId, "❌ Error: " + err.message + " (Check API URL and CORS)");
-            } finally {
-                loader.style.display = 'none';
-            }
+                if(err.message.includes("Failed to fetch")) {
+                    updateHistory(testId, "❌ CORS Error: Make sure OLLAMA_ORIGINS='*' is set on your PC and restart Ollama.");
+                } else if (err.message.includes("not found")) {
+                    updateHistory(testId, "❌ Error: Model not downloaded. Open PC terminal and run: ollama run deepseek-ocr");
+                } else {
+                    updateHistory(testId, "❌ " + err.message);
+                }
+            } finally { loader.style.display = 'none'; }
         }
 
-        // --- HISTORY LOGIC ---
         function saveToHistory(id, url, result) {
             let h = JSON.parse(localStorage.getItem('history') || '[]');
             h.unshift({ id, url, result, time: new Date().toLocaleTimeString() });
-            localStorage.setItem('history', JSON.stringify(h));
-            renderHistory();
+            localStorage.setItem('history', JSON.stringify(h)); renderHistory();
         }
-
         function updateHistory(id, newResult) {
             let h = JSON.parse(localStorage.getItem('history') || '[]');
             let item = h.find(i => i.id === id);
             if(item) item.result = newResult;
-            localStorage.setItem('history', JSON.stringify(h));
-            renderHistory();
+            localStorage.setItem('history', JSON.stringify(h)); renderHistory();
         }
-
         function renderHistory() {
             let h = JSON.parse(localStorage.getItem('history') || '[]');
             const list = document.getElementById('history-list');
             if(h.length === 0) return list.innerHTML = `<div style="text-align:center; padding-top:60px; color:var(--m3-outline)">No assessments yet.</div>`;
-            list.innerHTML = h.map(i => `
-                <div class="card">
-                    <img src="${i.url}">
-                    <div class="card-info">
-                        <div class="card-time">${i.time}</div>
-                        <div class="card-result">${i.result}</div>
-                    </div>
-                </div>
-            `).join('');
+            list.innerHTML = h.map(i => `<div class="card"><img src="${i.url}"><div class="card-info"><div class="card-time">${i.time}</div><div class="card-result">${i.result}</div></div></div>`).join('');
         }
-
-        function clearHistory() {
-            if(confirm("Clear history?")) { localStorage.removeItem('history'); renderHistory(); }
-        }
+        function clearHistory() { if(confirm("Clear history?")) { localStorage.removeItem('history'); renderHistory(); } }
     </script>
 </body>
 </html>
