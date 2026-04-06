@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Material You Assessment</title>
+    
+    <!-- Material Symbols & Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,fill,GRAD@24,400,0,0" rel="stylesheet" />
+
+    <!-- Firebase Compat SDKs (Non-Module) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        :root {
+            --primary: #6750A4;
+            --on-primary: #ffffff;
+            --primary-container: #EADDFF;
+            --on-primary-container: #21005D;
+            --surface: #FEF7FF;
+            --on-surface: #1D1B20;
+            --surface-variant: #E7E0EC;
+            --outline: #79747E;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--surface);
+            color: var(--on-surface);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Header */
+        header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 22px;
+            margin: 0;
+        }
+
+        /* History List */
+        #history-list {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 100px;
+        }
+
+        .card {
+            background: var(--surface-variant);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #ccc;
+        }
+
+        .card-content { flex: 1; }
+        .card-title { font-weight: 500; font-size: 14px; margin-bottom: 4px; }
+        .card-result { font-size: 13px; color: var(--primary); font-weight: 500; }
+
+        /* Full Screen Camera */
+        #camera-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            display: none;
+            z-index: 100;
+            flex-direction: column;
+        }
+
+        #video-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-ui {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.4) 100%);
+        }
+
+        .cam-hint {
+            color: white;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 50px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+
+        .cam-actions {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: var(--primary-container);
+            color: var(--on-primary-container);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 90;
+        }
+
+        /* Loading Bar */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: #e0e0e0;
+            display: none;
+            z-index: 1000;
+        }
+        #loader-progress {
+            width: 30%; height: 100%;
+            background: var(--primary);
+            animation: indeterminate 1.5s infinite linear;
+        }
+
+        @keyframes indeterminate {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(400%); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader"><div id="loader-progress"></div></div>
+
+    <header>
+        <h1>AssessAI</h1>
+        <span class="material-symbols-rounded">account_circle</span>
+    </header>
+
+    <div id="history-list">
+        <!-- History cards appear here -->
+        <div style="text-align:center; color: var(--outline); margin-top: 40px;">
+            No assessments yet. Tap the camera to start.
+        </div>
+    </div>
+
+    <button class="fab" onclick="startCamera()">
+        <span class="material-symbols-rounded" style="font-size: 30px;">add_a_photo</span>
+    </button>
+
+    <!-- Camera Interface -->
+    <div id="camera-overlay">
+        <video id="video-feed" autoplay playsinline muted></video>
+        <!-- The entire UI layer triggers capture, except the close button -->
+        <div class="camera-ui" onclick="capturePhoto()">
+            <div class="cam-hint">Tap anywhere to capture photo</div>
+            <div class="cam-actions">
+                <button class="btn-close" onclick="stopCamera(event)">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="hidden-canvas" style="display:none;"></canvas>
+
+    <script>
+        // --- 1. CONFIGURATION ---
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        const N8N_WEBHOOK_URL = "YOUR_N8N_WEBHOOK_URL";
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const video = document.getElementById('video-feed');
+        const overlay = document.getElementById('camera-overlay');
+        const loader = document.getElementById('loader');
+        const canvas = document.getElementById('hidden-canvas');
+
+        // --- 2. CAMERA FUNCTIONS ---
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: "environment" }, 
+                audio: false 
+            })
+            .then(stream => {
+                video.srcObject = stream;
+                overlay.style.display = 'flex';
+            })
+            .catch(err => {
+                alert("Camera error: " + err.message);
+            });
+        }
+
+        function stopCamera(event) {
+            if (event) event.stopPropagation();
+            const stream = video.srcObject;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            overlay.style.display = 'none';
+        }
+
+        async function capturePhoto() {
+            loader.style.display = 'block';
+            
+            // Prepare canvas
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            
+            // Compress to JPEG (0.5 quality) to save space in RTDB
+            const base64Image = canvas.toDataURL('image/jpeg', 0.5);
+            
+            stopCamera();
+
+            // Push to Firebase RTDB
+            const newRef = db.ref('history').push();
+            const entryId = newRef.key;
+
+            const initialData = {
+                image: base64Image,
+                result: "Processing...",
+                timestamp: Date.now()
+            };
+
+            try {
+                await newRef.set(initialData);
+
+                // Send to n8n
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: entryId,
+                        image: base64Image
+                    })
+                });
+
+                const data = await response.json();
+                // Expecting n8n to return: { "output": "[A] Correct answer..." }
+                const aiResponse = data.output || data.result || "No response from AI";
+                
+                // Update Firebase with final answer
+                db.ref('history/' + entryId).update({ result: aiResponse });
+
+            } catch (error) {
+                console.error(error);
+                db.ref('history/' + entryId).update({ result: "Error processing request" });
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        // --- 3. UI SYNC ---
+        db.ref('history').on('value', (snapshot) => {
+            const historyList = document.getElementById('history-list');
+            const data = snapshot.val();
+            
+            if (!data) return;
+
+            const items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+            items.sort((a, b) => b.timestamp - a.timestamp); // Newest first
+
+            historyList.innerHTML = '';
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${item.image}">
+                    <div class="card-content">
+                        <div class="card-title">${new Date(item.timestamp).toLocaleTimeString()}</div>
+                        <div class="card-result">${item.result}</div>
+                    </div>
+                `;
+                historyList.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
