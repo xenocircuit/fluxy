@@ -3,29 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AssessAI Lens</title>
+    <title>AssessAI Dual-Model</title>
     
-    <!-- Material Icons & Fonts -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --m3-surface: #FEF7FF;
-            --m3-primary: #6750A4;
-            --m3-primary-container: #EADDFF;
-            --m3-on-container: #21005D;
-            --m3-variant: #E7E0EC;
-            --m3-outline: #79747E;
+            --m3-surface: #FEF7FF; --m3-primary: #6750A4; --m3-primary-container: #EADDFF;
+            --m3-on-container: #21005D; --m3-variant: #E7E0EC; --m3-outline: #79747E;
         }
 
         body {
-            margin: 0; padding: 0; font-family: 'Google Sans', sans-serif;
-            background-color: var(--m3-surface); color: #1D1B20; overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            margin: 0; font-family: 'Google Sans', sans-serif; background-color: var(--m3-surface);
+            color: #1D1B20; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
         }
 
-        /* Top App Bar */
         header {
             height: 64px; display: flex; align-items: center; padding: 0 16px;
             background: var(--m3-surface); position: sticky; top: 0; z-index: 10;
@@ -33,40 +26,35 @@
         header h1 { font-size: 22px; flex: 1; margin: 0; font-weight: 400; }
         .icon-btn { background: none; border: none; color: var(--m3-outline); padding: 8px; cursor: pointer; }
 
-        /* URL Modal */
-        #url-modal {
+        /* Settings Modal */
+        #settings-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 200;
+            background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 200;
         }
         .modal-content {
-            background: var(--m3-surface); width: 90%; max-width: 400px; padding: 24px;
-            border-radius: 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            background: var(--m3-surface); width: 90%; max-width: 400px; padding: 24px; border-radius: 28px;
         }
-        .modal-content h2 { margin: 0 0 16px 0; font-size: 24px; color: #1D1B20; font-weight: 400; }
+        .modal-content h2 { margin: 0 0 4px 0; font-size: 22px; font-weight: 500; }
+        .modal-content label { font-size: 12px; color: var(--m3-outline); margin-top: 12px; display: block; font-weight: 500; }
         .modal-content input {
-            width: 100%; padding: 16px; box-sizing: border-box; border: 1px solid var(--m3-outline);
-            border-radius: 4px; font-size: 16px; margin-bottom: 24px; font-family: 'Google Sans', sans-serif;
+            width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid var(--m3-outline);
+            border-radius: 8px; font-size: 14px; margin-top: 4px; font-family: 'Google Sans', sans-serif; background: transparent;
         }
         .modal-content button {
-            background: var(--m3-primary); color: white; border: none; padding: 12px 24px;
-            border-radius: 100px; font-size: 14px; font-weight: 500; cursor: pointer; float: right;
+            background: var(--m3-primary); color: white; border: none; padding: 10px 24px; margin-top: 20px;
+            border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer; width: 100%;
         }
 
-        /* History Cards */
+        /* History */
         #history-list { padding: 16px; display: flex; flex-direction: column; gap: 12px; padding-bottom: 100px; }
-        .card {
-            background: var(--m3-variant); border-radius: 20px; padding: 12px; display: flex; gap: 16px; align-items: center;
-        }
-        .card img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; background: #ccc; }
+        .card { background: var(--m3-variant); border-radius: 20px; padding: 12px; display: flex; gap: 16px; align-items: center; }
+        .card img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; }
         .card-info { flex: 1; }
         .card-time { font-size: 11px; color: var(--m3-outline); margin-bottom: 4px; }
         .card-result { font-size: 14px; font-weight: 500; color: var(--m3-on-container); line-height: 1.4; }
 
         /* Camera Overlay */
-        #camera-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; display: none; z-index: 100;
-        }
+        #camera-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; display: none; z-index: 100; }
         #video-feed { width: 100%; height: 100%; object-fit: cover; }
         .camera-ui {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -74,15 +62,14 @@
         }
         .btn-close {
             background: rgba(0,0,0,0.5); border: none; color: white; width: 48px; height: 48px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; align-self: flex-end;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; align-self: flex-end; cursor: pointer;
         }
-        .cam-hint { color: white; text-align: center; font-size: 16px; margin-bottom: 60px; pointer-events: none; }
 
         /* FAB */
         .fab {
             position: fixed; bottom: 24px; right: 24px; width: 76px; height: 76px; border-radius: 24px;
             background: var(--m3-primary-container); color: var(--m3-on-container); border: none;
-            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 50;
+            display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 50; cursor: pointer;
         }
 
         /* Loader */
@@ -107,71 +94,91 @@
         <span class="material-icons-round" style="font-size: 36px;">photo_camera</span>
     </button>
 
-    <!-- Camera Overlay -->
     <div id="camera-overlay">
         <video id="video-feed" autoplay playsinline muted onclick="capturePhoto()"></video>
         <div class="camera-ui" onclick="capturePhoto()">
             <button class="btn-close" onclick="stopCamera(event)"><span class="material-icons-round">close</span></button>
-            <div class="cam-hint">Tap anywhere to capture photo</div>
+            <div style="color:white; text-align:center; margin-bottom:60px; text-shadow: 0 2px 4px #000;">Tap anywhere to capture</div>
         </div>
     </div>
 
-    <!-- URL Settings Modal -->
-    <div id="url-modal">
+    <!-- Settings Modal -->
+    <div id="settings-modal">
         <div class="modal-content">
-            <h2>n8n Webhook URL</h2>
-            <p style="font-size: 14px; color: var(--m3-outline); margin-top:0;">Paste your Localtunnel URL here.</p>
-            <input type="url" id="webhook-input" placeholder="https://your-tunnel.loca.lt" />
-            <button onclick="saveSettings()">Save</button>
-            <div style="clear:both;"></div>
+            <h2>API Pipeline Setup</h2>
+            
+            <label>API Endpoint (URL)</label>
+            <input type="url" id="api-url" placeholder="https://api.yourprovider.com" />
+            
+            <label>OCR Vision Model</label>
+            <input type="text" id="ocr-model" value="deepseek-ocr" />
+            
+            <label>Reasoning Answer Model</label>
+            <input type="text" id="ans-model" value="deepseek-v3.1:671b-cloud" />
+            
+            <label>API Key</label>
+            <input type="password" id="api-key" placeholder="Bearer Token" />
+
+            <button onclick="saveSettings()">Save Configuration</button>
         </div>
     </div>
 
     <canvas id="hidden-canvas" style="display:none;"></canvas>
 
     <script>
-        // --- CLOUDINARY CONFIG (HARDCODED PER YOUR REQUEST) ---
-        const CLOUD_NAME = "dno4zfxbz";
-        const UPLOAD_PRESET = "mldefault"; 
+        // --- PRE-CONFIGURED DEFAULTS ---
+        const DEFAULT_KEY = "b59f87f33bcf48f29069785e2a83bfcf.b3KEJ7vpeftmr39NGB2Wlerm";
+        const DEFAULT_OCR = "deepseek-ocr";
+        const DEFAULT_ANS = "deepseek-v3.1:671b-cloud";
 
         let video = document.getElementById('video-feed');
         let canvas = document.getElementById('hidden-canvas');
         let overlay = document.getElementById('camera-overlay');
         let loader = document.getElementById('loader');
 
-        // --- INIT ---
         window.onload = () => {
             renderHistory();
-            if(!localStorage.getItem('n8n_url')) openSettings();
+            // Automatically set the defaults if they don't exist yet
+            if(!localStorage.getItem('api_key')) localStorage.setItem('api_key', DEFAULT_KEY);
+            if(!localStorage.getItem('ocr_model')) localStorage.setItem('ocr_model', DEFAULT_OCR);
+            if(!localStorage.getItem('ans_model')) localStorage.setItem('ans_model', DEFAULT_ANS);
+            
+            // Force the user to just provide the Base URL the first time
+            if(!localStorage.getItem('api_url')) openSettings();
         };
 
-        // --- SETTINGS LOGIC ---
         function openSettings() {
-            document.getElementById('webhook-input').value = localStorage.getItem('n8n_url') || "";
-            document.getElementById('url-modal').style.display = 'flex';
+            document.getElementById('api-url').value = localStorage.getItem('api_url') || "";
+            document.getElementById('ocr-model').value = localStorage.getItem('ocr_model') || DEFAULT_OCR;
+            document.getElementById('ans-model').value = localStorage.getItem('ans_model') || DEFAULT_ANS;
+            document.getElementById('api-key').value = localStorage.getItem('api_key') || DEFAULT_KEY;
+            document.getElementById('settings-modal').style.display = 'flex';
         }
 
         function saveSettings() {
-            let url = document.getElementById('webhook-input').value.trim();
-            if(!url) return alert("Please enter a URL");
+            let url = document.getElementById('api-url').value.trim();
+            if(!url) return alert("Please enter the API URL");
             
-            // Auto-format URL to ensure it ends with /webhook/assessment
-            if(!url.includes('/webhook/assessment')) {
-                url = url.replace(/\/$/, '') + '/webhook/assessment';
+            // Ensure Ollama format endpoint format
+            if (!url.endsWith('/api/generate')) {
+                url = url.replace(/\/$/, '') + '/api/generate';
             }
             
-            localStorage.setItem('n8n_url', url);
-            document.getElementById('url-modal').style.display = 'none';
+            localStorage.setItem('api_url', url);
+            localStorage.setItem('ocr_model', document.getElementById('ocr-model').value.trim());
+            localStorage.setItem('ans_model', document.getElementById('ans-model').value.trim());
+            localStorage.setItem('api_key', document.getElementById('api-key').value.trim());
+            
+            document.getElementById('settings-modal').style.display = 'none';
         }
 
-        // --- CAMERA LOGIC ---
         async function startCamera() {
-            if(!localStorage.getItem('n8n_url')) return openSettings();
+            if(!localStorage.getItem('api_url')) return openSettings();
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
                 video.srcObject = stream;
                 overlay.style.display = 'block';
-            } catch (err) { alert("Camera Access Denied."); }
+            } catch (err) { alert("Camera Access Denied. Check your browser permissions."); }
         }
 
         function stopCamera(e) {
@@ -184,36 +191,67 @@
             loader.style.display = 'block';
             canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0);
-            const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.8));
+            
+            // Get base64 string
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+            const base64Image = dataUrl.split(',')[1]; 
             stopCamera();
 
+            const testId = Date.now();
+            saveToHistory(testId, dataUrl, "📷 Step 1: Scanning image text with deepseek-ocr...");
+
             try {
-                // 1. Upload to Cloudinary
-                const fd = new FormData();
-                fd.append('file', blob);
-                fd.append('upload_preset', UPLOAD_PRESET);
-                
-                const cRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: fd });
-                const cData = await cRes.json();
-                const imageUrl = cData.secure_url;
+                const url = localStorage.getItem('api_url');
+                const ocrModel = localStorage.getItem('ocr_model');
+                const ansModel = localStorage.getItem('ans_model');
+                const apiKey = localStorage.getItem('api_key');
 
-                // 2. Save Initial History
-                const id = Date.now();
-                saveToHistory(id, imageUrl, "AI is analyzing...");
+                // Attach API Key securely in Headers
+                const headers = { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}` 
+                };
 
-                // 3. Post to User's URL
-                const n8nUrl = localStorage.getItem('n8n_url');
-                const nRes = await fetch(n8nUrl, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ image_url: imageUrl })
+                // --- STEP 1: DEEPSEEK-OCR ---
+                const ocrResponse = await fetch(url, {
+                    method: 'POST', 
+                    headers: headers,
+                    body: JSON.stringify({
+                        model: ocrModel,
+                        prompt: "Extract all text from this image exactly as written. Do not answer questions, just output the raw text.",
+                        images: [base64Image],
+                        stream: false
+                    })
                 });
 
-                const nData = await nRes.json();
-                updateHistory(id, nData.result || "AI Processed successfully.");
+                if(!ocrResponse.ok) throw new Error("OCR Model failed to respond.");
+                const ocrData = await ocrResponse.json();
+                const extractedText = ocrData.response;
+
+                updateHistory(testId, "🧠 Step 2: 671B Model is reasoning...");
+
+                // --- STEP 2: DEEPSEEK 671B CLOUD ---
+                const finalPrompt = `You are an expert test solver. Read the following text extracted from an image. Identify the main question, evaluate the options, and provide the correct option number. Format exactly like this: [Option Number] Brief explanation.\n\nExtracted Text:\n${extractedText}`;
+
+                const ansResponse = await fetch(url, {
+                    method: 'POST', 
+                    headers: headers,
+                    body: JSON.stringify({
+                        model: ansModel,
+                        prompt: finalPrompt,
+                        stream: false
+                    })
+                });
+
+                if(!ansResponse.ok) throw new Error("Reasoning Model failed to respond.");
+                const ansData = await ansResponse.json();
+                
+                // Final Output
+                updateHistory(testId, ansData.response);
 
             } catch (err) {
-                alert("Error connecting to server. Is your Localtunnel running?");
+                console.error(err);
+                updateHistory(testId, "❌ Error: " + err.message + " (Check API URL and CORS)");
             } finally {
                 loader.style.display = 'none';
             }
@@ -238,10 +276,7 @@
         function renderHistory() {
             let h = JSON.parse(localStorage.getItem('history') || '[]');
             const list = document.getElementById('history-list');
-            if(h.length === 0) {
-                list.innerHTML = `<div style="text-align:center; padding-top:60px; color:var(--m3-outline)">No assessments yet.</div>`;
-                return;
-            }
+            if(h.length === 0) return list.innerHTML = `<div style="text-align:center; padding-top:60px; color:var(--m3-outline)">No assessments yet.</div>`;
             list.innerHTML = h.map(i => `
                 <div class="card">
                     <img src="${i.url}">
@@ -254,10 +289,7 @@
         }
 
         function clearHistory() {
-            if(confirm("Clear all history?")) {
-                localStorage.removeItem('history');
-                renderHistory();
-            }
+            if(confirm("Clear history?")) { localStorage.removeItem('history'); renderHistory(); }
         }
     </script>
 </body>
